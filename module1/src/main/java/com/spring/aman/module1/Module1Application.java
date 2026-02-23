@@ -7,9 +7,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Module1Application implements CommandLineRunner {
-	@Autowired
-	PaymentServices payment;
 
+
+	@Autowired
+//	PaymentServices payment;
+
+
+	NotificationService NotificationServices;
+	public Module1Application(NotificationService NotificationServices){
+		this.NotificationServices=NotificationServices;
+	}
 	public static void main(String[] args) {
 
 		SpringApplication.run(Module1Application.class, args);
@@ -17,6 +24,7 @@ public class Module1Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		payment.pay();
+//		payment.pay();
+		NotificationServices.send("hello");
 	}
 }
