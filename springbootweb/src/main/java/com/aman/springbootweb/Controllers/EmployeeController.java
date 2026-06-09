@@ -3,6 +3,7 @@ package com.aman.springbootweb.Controllers;
 import com.aman.springbootweb.DTO.EmployeeDTO;
 import com.aman.springbootweb.entities.EmployeeEntity;
 import com.aman.springbootweb.repository.EmployeeRepository;
+import com.aman.springbootweb.services.EmployeeService;
 import jakarta.persistence.Id;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,28 +14,51 @@ import java.util.List;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    private final EmployeeRepository employeeRepository;
+//    private final EmployeeRepository employeeRepository;
+//
+//    public EmployeeController(EmployeeRepository employeeRepository) {
+//        this.employeeRepository = employeeRepository;
+//    }
+//    //not recommended to link controller and repository(persistence layer) without intermediate service layer.
+//    // doing for learning purpose
+//    @GetMapping("/{employeeId}")
+//    public EmployeeEntity getEmployeeById(@PathVariable(name="employeeId") Long id) {
+//        return employeeRepository.findById(id).orElse(null);
+//    }
+//
+//    @GetMapping //  we can remove as added the employee as parent path  using @RequestMapping/employee
+//    public List<EmployeeEntity> getEmployeeAge(@RequestParam(required = false) Integer age, @RequestParam (required = false) String sortBy){
+//        return employeeRepository.findAll();
+//    }
+//
+//    @PostMapping("/setEmp")
+//    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity inputEmp){
+//        return employeeRepository.save(inputEmp);
+//    }
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
+
     //not recommended to link controller and repository(persistence layer) without intermediate service layer.
     // doing for learning purpose
     @GetMapping("/{employeeId}")
-    public EmployeeEntity getEmployeeById(@PathVariable(name="employeeId") Long id) {
-        return employeeRepository.findById(id).orElse(null);
+    public EmployeeDTO getEmployeeById(@PathVariable(name="employeeId") Long id) {
+        return employeeService.getEmployeeById(id);
     }
 
     @GetMapping //  we can remove as added the employee as parent path  using @RequestMapping/employee
-    public List<EmployeeEntity> getEmployeeAge(@RequestParam(required = false) Integer age, @RequestParam (required = false) String sortBy){
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getEmployeeAge(@RequestParam(required = false) Integer age, @RequestParam (required = false) String sortBy){
+        return employeeService.getEmployeeAge();
     }
 
     @PostMapping("/setEmp")
-    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity inputEmp){
-        return employeeRepository.save(inputEmp);
+    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO inputEmp){
+        return employeeService.createEmployee(inputEmp);
     }
-
 
 
 //    @GetMapping("/{employeeId}")
