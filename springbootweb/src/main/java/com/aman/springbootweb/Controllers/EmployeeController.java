@@ -5,10 +5,12 @@ import com.aman.springbootweb.entities.EmployeeEntity;
 import com.aman.springbootweb.repository.EmployeeRepository;
 import com.aman.springbootweb.services.EmployeeService;
 import jakarta.persistence.Id;
+import org.aspectj.apache.bcel.generic.LineNumberGen;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/employee")
@@ -84,9 +86,19 @@ public class EmployeeController {
 //    }
 
 
-    @PutMapping
-    public String putReq(){
-        return "putted";
+    @PutMapping(path ="/{employeeId}")
+    public EmployeeDTO updateEmployeeById(@RequestBody EmployeeDTO employeeDTO,@PathVariable Long employeeId){
+        return employeeService.updateEmployeeById(employeeId,employeeDTO);
+    }
+
+    @DeleteMapping(path ="/{employeeId}")
+    public boolean DeleteEmployeeById(@PathVariable Long employeeId){
+         return employeeService.DeleteEmployeeById(employeeId);
+    }
+
+    @PatchMapping(path ="/{employeeId}")
+    public EmployeeDTO updatePartiallyById(@RequestBody Map<String,Object> updates, @PathVariable Long employeeId){
+        return employeeService.updatePartiallyById(employeeId,updates);
     }
 
 }
