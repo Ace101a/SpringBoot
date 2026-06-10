@@ -24,11 +24,16 @@ public class EmployeeService {
         this.mapper = mapper;
     }
 
-    public EmployeeDTO getEmployeeById(Long id) {
-        EmployeeEntity employeeEntity = employeeRepository.findById(id).orElse(null);
-        ModelMapper mapper = new ModelMapper();
-        return mapper.map(employeeEntity, EmployeeDTO.class);
-    }
+//    public EmployeeDTO getEmployeeById(Long id) {
+//        EmployeeEntity employeeEntity = employeeRepository.findById(id).orElse(null);
+//        ModelMapper mapper = new ModelMapper();
+//        return mapper.map(employeeEntity, EmployeeDTO.class);
+//    }
+public Optional<EmployeeDTO> getEmployeeById(Long id) {
+//    Optional<EmployeeEntity> OptionalemployeeEntity = employeeRepository.findById(id);
+//    return OptionalemployeeEntity.map(OptionalemployeeEntity1->mapper.map(OptionalemployeeEntity,EmployeeDTO.class));
+    return employeeRepository.findById(id).map(employeeEntity -> mapper.map(employeeEntity,EmployeeDTO.class));
+}
 
     public List<EmployeeDTO> getEmployeeAge() {
         List<EmployeeEntity> employeeEntities= employeeRepository.findAll();

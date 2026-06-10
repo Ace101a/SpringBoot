@@ -1,5 +1,7 @@
 package com.aman.springbootweb.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 public class EmployeeDTO {
@@ -12,6 +14,7 @@ public class EmployeeDTO {
     private Integer age;
 
     private LocalDate dateOfJoining;
+
 
     private Boolean isActive;
 
@@ -27,7 +30,7 @@ public class EmployeeDTO {
         this.dateOfJoining = dateOfJoining;
         this.isActive = isActive;
     }
-
+    @JsonProperty("isActive")
     public Boolean getActive() {
         return isActive;
     }
