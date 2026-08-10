@@ -42,7 +42,7 @@ public Optional<EmployeeDTO> getEmployeeById(Long id) {
                 .map(employeeEntity -> mapper.map(employeeEntity,EmployeeDTO.class))
                 .collect(Collectors.toList());
 
-        }
+        } 
 
     public EmployeeDTO createEmployee(EmployeeDTO inputEmp) {
         EmployeeEntity toSaveEntity = mapper.map(inputEmp, EmployeeEntity.class);
@@ -68,7 +68,7 @@ public Optional<EmployeeDTO> getEmployeeById(Long id) {
         boolean exits = employeeRepository.existsById(employeeId);
         if(!exits) return null;
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).get();
-        updates.forEach((field,value)->{
+        updates.forEach((field,value)-> {
             Field fieldToBeUpdated = ReflectionUtils.findField(EmployeeEntity.class,field);
             fieldToBeUpdated.setAccessible(true);
             ReflectionUtils.setField(fieldToBeUpdated,employeeEntity,value);
@@ -77,3 +77,4 @@ public Optional<EmployeeDTO> getEmployeeById(Long id) {
         return mapper.map(employeeEntity,EmployeeDTO.class);
     }
 }
+
