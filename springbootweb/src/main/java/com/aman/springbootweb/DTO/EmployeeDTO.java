@@ -1,6 +1,8 @@
 package com.aman.springbootweb.DTO;
 
+import com.aman.springbootweb.annotation.EmployeeRoleValidation;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,16 +16,35 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EmployeeDTO {
     private Long id;
-
+    //@NotNull(message = "Name is required")
+    //@NotEmpty //it allows space blanks so its not empty means there should be something can be space
+    @NotBlank
+    @Size(min = 2,max = 20,message = "Number of characters in name should be in range : [2,20]")
     private String name;
-
+    @Email(message = "Enter a valid mail")
     private String email;
 
+    @NotNull
+    @Max(value =80,message = "Age should be less than 80")
+    @Min(value = 18,message = "Age must be greater than 18")
     private Integer age;
+
+    @NotNull
+    @Positive(message = "can not be negative")
+    @Digits(integer = 6,fraction = 2,message = "Can have onle 6 digits in integer and 2 in fraction")
+    @DecimalMax(value = "10000.99")//value must be less than this
+    @DecimalMin(value = "50.10")//Atleast this much
+    private Double salary;
 
     private LocalDate dateOfJoining;
 
+    @NotBlank
+    //@Pattern(regexp = "^(ADMIN|USER)$")
+    @EmployeeRoleValidation
+    private String role;
 
+
+    @AssertTrue(message = "Only active employees are allowed")
     private Boolean isActive;
 
 //    public EmployeeDTO(){

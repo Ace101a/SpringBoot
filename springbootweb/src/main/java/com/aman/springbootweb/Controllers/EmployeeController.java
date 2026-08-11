@@ -5,8 +5,10 @@ import com.aman.springbootweb.entities.EmployeeEntity;
 import com.aman.springbootweb.repository.EmployeeRepository;
 import com.aman.springbootweb.services.EmployeeService;
 import jakarta.persistence.Id;
+import jakarta.validation.Valid;
 import org.aspectj.apache.bcel.generic.LineNumberGen;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -58,18 +61,25 @@ public class EmployeeController {
         Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(id);
         return employeeDTO
                 .map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(()->new NoSuchElementException());
 
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleEmployeeNotFound(NoSuchElementException exception){
+        return new ResponseEntity<>("No such Employee with this id", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping //  we can remove as added the employee as parent path  using @RequestMapping/employee
     public ResponseEntity<List<EmployeeDTO>> getEmployeeAge(@RequestParam(required = false) Integer age, @RequestParam (required = false) String sortBy){
-        return ResponseEntity.ok(employeeService.getEmployeeAge());//no need for not found as it will return all wmployees
+        return ResponseEntity.ok(employeeService.getEmployeeAge());//no need for not found as it will return all employees
         //or return no employees empty list
     }
 
+
+
     @PostMapping("/setEmp")
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO inputEmp){
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody @Valid EmployeeDTO inputEmp){
         EmployeeDTO savedEmployee = employeeService.createEmployee(inputEmp);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
