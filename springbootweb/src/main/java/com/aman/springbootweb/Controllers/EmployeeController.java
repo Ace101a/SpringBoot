@@ -2,6 +2,7 @@ package com.aman.springbootweb.Controllers;
 
 import com.aman.springbootweb.DTO.EmployeeDTO;
 import com.aman.springbootweb.entities.EmployeeEntity;
+import com.aman.springbootweb.exceptions.ResourceNotFoundException;
 import com.aman.springbootweb.repository.EmployeeRepository;
 import com.aman.springbootweb.services.EmployeeService;
 import jakarta.persistence.Id;
@@ -54,24 +55,19 @@ public class EmployeeController {
     //not recommended to link controller and repository(persistence layer) without intermediate service layer.
     // doing for learning purpose
     @GetMapping("/{employeeId}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable(name="employeeId") Long id) {
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable(name="employeeId") @Valid Long id) {
 //        EmployeeDTO employeeDTO = employeeService.getEmployeeById(id);
 //        if(employeeDTO==null) return ResponseEntity.notFound().build();
 //        return ResponseEntity.ok(employeeDTO);
         Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(id);
         return employeeDTO
                 .map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(()->new ResourceNotFoundException("Employee not found with id "+id));
 
-    }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleEmployeeNotFound(NoSuchElementException exception){
-        return new ResponseEntity<>("No such Employee with this id", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping //  we can remove as added the employee as parent path  using @RequestMapping/employee
-    public ResponseEntity<List<EmployeeDTO>> getEmployeeAge(@RequestParam(required = false) Integer age, @RequestParam (required = false) String sortBy){
+    public ResponseEntity<List<EmployeeDTO>> getEmployeeAge(@RequestParam(required = false) @Valid Integer age, @RequestParam (required = false) @Valid String sortBy){
         return ResponseEntity.ok(employeeService.getEmployeeAge());//no need for not found as it will return all employees
         //or return no employees empty list
     }
@@ -109,20 +105,20 @@ public class EmployeeController {
 
 
     @PutMapping(path ="/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestBody EmployeeDTO employeeDTO,@PathVariable Long employeeId){
+    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestBody @Valid EmployeeDTO employeeDTO,@PathVariable @Valid Long employeeId){
         EmployeeDTO toUpdateEmployee =  employeeService.updateEmployeeById(employeeId,employeeDTO);
         return ResponseEntity.ok(toUpdateEmployee);
     }
 
     @DeleteMapping(path ="/{employeeId}")
-    public ResponseEntity<Boolean> DeleteEmployeeById(@PathVariable Long employeeId){
+    public ResponseEntity<Boolean> DeleteEmployeeById(@PathVariable @Valid Long employeeId){
         boolean gotDeleted = employeeService.DeleteEmployeeById(employeeId);
         if(gotDeleted == true) return ResponseEntity.ok(true);
         return ResponseEntity.notFound().build();
     }
 
     @PatchMapping(path ="/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updatePartiallyById(@RequestBody Map<String,Object> updates, @PathVariable Long employeeId){
+    public ResponseEntity<EmployeeDTO> updatePartiallyById(@RequestBody @Valid Map<String,Object> updates, @PathVariable @Valid Long employeeId){
         EmployeeDTO employeeDTO = employeeService.updatePartiallyById(employeeId,updates);
         if(employeeDTO==null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(employeeDTO);
